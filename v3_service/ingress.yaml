@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hello-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+    - http:
+        paths:
+          - backend:  # 匹配前缀为 /hello 的路由规则，重定向到 hellok8s:v3 服务
+              service:
+                name: service-hellok8s-clusterip
+                port:
+                  number: 3000
+            pathType: Prefix
+            path: /hello
+
+          - backend:  # 匹配前缀为 / 的跟路径重定向到 nginx
+              service:
+                name: service-nginx-clusterip
+                port:
+                  number: 4000
+            pathType: Prefix
+            path: /
